@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Who unfollowed me?</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <h1>Who unfollowed me?</h1>
+    <p>
+      Find out which accounts you follow but who don’t follow you back. Follow
+      these simple steps below to get started!
+    </p>
+
+    <div class="step-guide">
+      <div class="step">
+        Go to your instagram settings and tap on
+        <strong>Accounts Centre</strong>.
+      </div>
+      <div class="step">
+        Tap on <strong>Your information and permissions</strong> and then tap on
+        <strong>Download your information</strong>.
+      </div>
+      <div class="step">
+        Tap on <strong>Download or transfer information</strong>, check
+        instagram and then click <strong>Some of your information</strong>.
+      </div>
+      <div class="step">
+        Go to the connections section and check
+        <strong>Followers and following</strong>.
+      </div>
+      <div class="step">
+        For the last step tap on <strong>Download to device</strong>, adjust the
+        range to <strong>All time</strong>, change the Format to
+        <strong>JSON</strong> and click on Create files.
+      </div>
+      <div class="step">
+        For the files to be accessible you will have to wait a few minutes and
+        then click Download.
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Input for Following -->
+      <div class="input-group">
+        <label for="followingFile"
+          >Upload your <strong>following.json</strong> file:</label
+        >
+        <input type="file" id="followingFile" accept=".json" />
+      </div>
+
+      <!-- Input for Followers -->
+      <div class="input-group">
+        <label for="followersFile"
+          >Upload your <strong>followers.json</strong> file:</label
+        >
+        <input type="file" id="followersFile" accept=".json" />
+      </div>
+
+      <!-- Process Button -->
+      <button onclick="processFiles()">Check Non-Followers</button>
+    </div>
+
+    <h2 id="resultsTitle" class="fade-in" style="display: none">Results:</h2>
+    <ul id="nonFollowersList" class="fade-in" style="display: none"></ul>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
