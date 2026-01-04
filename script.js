@@ -52,15 +52,40 @@ async function processFiles() {
   }
 }
 
-function checkNonFollowers(followingData, followersData) {
-  const followerNames = new Set(
-    followersData.map((follower) => follower.string_list_data[0].value)
-  );
+function extractUsernames(data) {
+  const usernames = [];
+  
+  // Check if data has relationships_following property (format 1)
+  if (data.relationships_following) {
+    data.relationships_following.forEach((item) => {
+      if (item.string_list_data && item.string_list_data.length > 0) {
+        const username = item.string_list_data[0].value || item.title;
+        if (username) usernames.push(username);
+      }
+    });
+  }
+  // Check if data is an array (format 2)
+  else if (Array.isArray(data)) {
+    data.forEach((item) => {
+      if (item.string_list_data && item.string_list_data.length > 0) {
+        const username = item.string_list_data[0].value;
+        if (username) usernames.push(username);
+      }
+    });
+  }
+  
+  return usernames;
+}
 
-  const nonFollowers = followingData.relationships_following
-    .filter(
-      (follower) => !followerNames.has(follower.string_list_data[0].value)
-    )
-    .map((follower) => follower.string_list_data[0].value);
+function checkNonFollowers(followingData, followersData) {
+  const followingUsernames = extractUsernames(followingData);
+  const followerUsernames = extractUsernames(followersData);
+  
+  const followerNames = new Set(followerUsernames);
+  
+  const nonFollowers = followingUsernames.filter(
+    (username) => !followerNames.has(username)
+  );
+  
   return nonFollowers;
 }
