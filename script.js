@@ -44,16 +44,21 @@
 
     if (items) {
       items.forEach((item) => {
-        if (
-          item &&
-          Array.isArray(item.string_list_data) &&
-          item.string_list_data.length > 0
-        ) {
-          const value = item.string_list_data[0].value;
-          if (typeof value === "string" && value.length > 0) {
-            usernames.push(value);
-          }
-        }
+        if (!item) return;
+        // Instagram's `following.json` puts the username in `item.title` and
+        // omits `value` from `string_list_data`. `followers_1.json` does the
+        // opposite. Accept either.
+        const entry =
+          Array.isArray(item.string_list_data) && item.string_list_data[0];
+        const fromValue = entry && entry.value;
+        const fromTitle = item.title;
+        const username =
+          typeof fromValue === "string" && fromValue.length > 0
+            ? fromValue
+            : typeof fromTitle === "string" && fromTitle.length > 0
+            ? fromTitle
+            : null;
+        if (username) usernames.push(username);
       });
     }
 
@@ -119,6 +124,16 @@
     function wireDropzone(zone) {
       const input = zone.querySelector('input[type="file"]');
       const replaceBtn = zone.querySelector(".dropzone-replace");
+
+      // When a file is already selected, clicking the label/zone itself should
+      // NOT re-open the picker — only the explicit "Replace" button should.
+      // This prevents accidental picker opens from clicking the check icon or
+      // filename text.
+      zone.addEventListener("click", (e) => {
+        if (!zone.classList.contains("is-selected")) return;
+        if (e.target.closest(".dropzone-replace")) return;
+        e.preventDefault();
+      });
 
       // Clicking "Replace" should re-open file picker without toggling the
       // current selection state off first.
